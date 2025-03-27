@@ -5,7 +5,6 @@ This allows the package to be run directly with `python -m anki`
 or as an installed executable.
 """
 
-import mcp
 from .server import app
 
 def main():
