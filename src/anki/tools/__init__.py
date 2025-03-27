@@ -5,6 +5,7 @@ from .list_decks import list_decks
 from .get_cards_reviewed import get_cards_reviewed
 from .list_models import list_models
 from .get_model_fields import get_model_fields
+from .find_notes import find_notes
 
 __all__ = [
     'add_note',
@@ -13,4 +14,5 @@ __all__ = [
     'get_cards_reviewed',
     'list_models',
     'get_model_fields',
+    'find_notes'
 ]

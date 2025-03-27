@@ -8,7 +8,8 @@ from .tools import (
     list_decks, 
     get_cards_reviewed,
     list_models,
-    get_model_fields
+    get_model_fields,
+    find_notes
 )
 
 app = FastMCP("anki")
@@ -20,6 +21,7 @@ app.tool(name="list-decks", description="List all available decks in Anki")(list
 app.tool(name="get-cards-reviewed", description="Get the number of cards reviewed by day")(get_cards_reviewed)
 app.tool(name="list-models", description="List all available note models in Anki")(list_models)
 app.tool(name="get-model-fields", description="Get all field names and descriptions for a specific Anki note model")(get_model_fields)
+app.tool(name='find-notes', description='Find notes matching a query in Anki')(find_notes)
 
 if __name__ == "__main__":
     # Initialize and run the server
