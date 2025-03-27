@@ -1,9 +1,16 @@
-from . import server
-import asyncio
+#!/usr/bin/env python3
+"""
+Entry point for the Anki MCP server.
+This allows the package to be run directly with `python -m anki`
+or as an installed executable.
+"""
+
+import mcp
+from .server import app
 
 def main():
-    """Main entry point for the package."""
-    asyncio.run(server.main())
+    """Run the Anki MCP server."""
+    app.run(transport='stdio')
 
-# Optionally expose other important items at package level
-__all__ = ['main', 'server']
+if __name__ == "__main__":
+    main()
