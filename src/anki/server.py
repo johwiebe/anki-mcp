@@ -15,6 +15,7 @@ DEFAULT_MODEL_NAME = "Basic"     # Pre-specified model name
 
 app = FastMCP("anki")
 
+
 async def make_anki_request(action: str, **params) -> Dict[str, Any]:
     """Make a request to the Anki Connect API with proper error handling."""
     request_data = {
@@ -104,7 +105,7 @@ async def check_connection() -> list[types.TextContent]:
 @app.tool(name="list-decks", description="List all available decks in Anki")
 async def list_decks() -> list[types.TextContent]:
     result = await make_anki_request("deckNames")
-    
+
     if result["success"]:
         decks = result["result"]
         return [
@@ -143,6 +144,68 @@ async def get_cards_reviewed() -> list[types.TextContent]:
                 text=f"Failed to retrieve review statistics: {result['error']}",
             )
         ]
+
+
+@app.tool(name="list-models", description="List all available note models in Anki")
+async def list_models() -> list[types.TextContent]:
+    result = await make_anki_request("modelNames")
+
+    if result["success"]:
+        models = result["result"]
+        return [
+            types.TextContent(
+                type="text",
+                text=f"Available note models in Anki ({len(models)}):\n" + "\n".join(f"- {model}" for model in models),
+            )
+        ]
+    else:
+        return [
+            types.TextContent(
+                type="text",
+                text=f"Failed to retrieve models: {result['error']}",
+            )
+        ]
+
+
+@app.tool(name="get-model-fields", description="Get all field names and descriptions for a specific Anki note model")
+async def get_model_fields(model_name: str) -> list[types.TextContent]:
+    # Get field names
+    names_result = await make_anki_request("modelFieldNames", modelName=model_name)
+
+    # Get field descriptions
+    descriptions_result = await make_anki_request("modelFieldDescriptions", modelName=model_name)
+
+    if names_result["success"] and descriptions_result["success"]:
+        field_names = names_result["result"]
+        field_descriptions = descriptions_result["result"]
+
+        # Combine fields and descriptions
+        field_info = []
+        for i, (name, description) in enumerate(zip(field_names, field_descriptions)):
+            desc_text = f": {description}" if description else ""
+            field_info.append(f"- {name}{desc_text}")
+
+        return [
+            types.TextContent(
+                type="text",
+                text=f"Fields for model '{model_name}' ({len(field_names)}):\n" + "\n".join(field_info),
+            )
+        ]
+    elif not names_result["success"]:
+        return [
+            types.TextContent(
+                type="text",
+                text=f"Failed to retrieve field names: {names_result['error']}",
+            )
+        ]
+    else:
+        return [
+            types.TextContent(
+                type="text",
+                text=f"Failed to retrieve field descriptions: {descriptions_result['error']}",
+            )
+        ]
+
 
 if __name__ == "__main__":
     # Initialize and run the server
