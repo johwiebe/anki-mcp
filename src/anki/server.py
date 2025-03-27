@@ -43,22 +43,18 @@ async def make_anki_request(action: str, **params) -> Dict[str, Any]:
 @app.tool(name="add-note", description="Add a new note to Anki")
 async def add_note(
     note_name: str = Field(description="Identifier for the note"),
-    front: str = Field(description="Content for front of the card"),
-    back: str = Field(description="Content for back of the card"),
+    fields: Dict[str, str] = Field(description="Field values for the note (varies by model)"),
     deck: str = Field(description="Deck name (optional)", default=DEFAULT_DECK_NAME),
     model: str = Field(description="Model name (optional)", default=DEFAULT_MODEL_NAME)
 ) -> list[types.TextContent]:
-    if not note_name or not front or not back:
-        raise ValueError("Missing required fields: name, front, and back")
+    if not note_name or not fields:
+        raise ValueError("Missing required fields: name and fields")
 
     # Create the note for Anki
     note = {
         "deckName": deck,
         "modelName": model,
-        "fields": {
-            "Front": front,
-            "Back": back
-        },
+        "fields": fields,
         "options": {
             "allowDuplicate": False
         },
