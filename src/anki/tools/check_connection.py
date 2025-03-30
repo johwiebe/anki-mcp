@@ -1,6 +1,6 @@
 import mcp.types as types
 
-from .utils import make_anki_request
+from anki.tools.utils import make_anki_request
 
 async def check_connection() -> list[types.TextContent]:
     result = await make_anki_request("version")
