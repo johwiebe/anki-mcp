@@ -1,5 +1,5 @@
 [project]
-name = "anki"
+name = "anki-mcp"
 version = "0.1.0"
 description = "An Anki MCP server"
 readme = "README.md"
@@ -19,4 +19,4 @@ dev = [
 ]
 
 [project.scripts]
-anki = "anki:main"
+anki-mcp = "anki_mcp:main"

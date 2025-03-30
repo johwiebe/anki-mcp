@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Annotated
 from pydantic import Field, BaseModel
 import mcp.types as types
 
-from anki.tools.utils import make_anki_request
+from anki_mcp.tools.utils import make_anki_request
 
 
 class NoteUpdate(BaseModel):

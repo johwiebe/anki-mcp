@@ -1,14 +1,14 @@
 import mcp.server.stdio
 from mcp.server.fastmcp import FastMCP
 
-from anki.tools.add_note import add_notes
-from anki.tools.check_connection import check_connection
-from anki.tools.list_decks import list_decks
-from anki.tools.get_cards_reviewed import get_cards_reviewed
-from anki.tools.list_models import list_models
-from anki.tools.get_model_fields import get_model_fields
-from anki.tools.find_notes import find_notes
-from anki.tools.update_note import update_notes
+from anki_mcp.tools.add_note import add_notes
+from anki_mcp.tools.check_connection import check_connection
+from anki_mcp.tools.list_decks import list_decks
+from anki_mcp.tools.get_cards_reviewed import get_cards_reviewed
+from anki_mcp.tools.list_models import list_models
+from anki_mcp.tools.get_model_fields import get_model_fields
+from anki_mcp.tools.find_notes import find_notes
+from anki_mcp.tools.update_note import update_notes
 
 app = FastMCP("anki")
 
