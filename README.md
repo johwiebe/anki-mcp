@@ -39,6 +39,46 @@ This MCP server enables AI assistants to interact with Anki through the followin
 - Anki must be installed and running
 - [AnkiConnect](https://ankiweb.net/shared/info/2055492159) add-on must be installed in Anki
 
+## Installation
+
+### Installing uv
+
+uv is a required dependency for running this MCP server. Follow these steps to install uv:
+
+#### macOS and Linux
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+#### Windows
+
+```bash
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+For alternative installation methods and more detailed instructions, visit the [uv installation documentation](https://docs.astral.sh/uv/getting-started/installation/).
+
+### Installing the Anki MCP Server
+
+Once uv is installed, you can install the Anki MCP server using:
+
+```bash
+uvx install anki-mcp
+```
+
+To install a specific version:
+
+```bash
+uvx install anki-mcp==1.0.0
+```
+
+To update to the latest version:
+
+```bash
+uvx install --upgrade anki-mcp
+```
+
 ## Configuration
 
 ### Claude Desktop
@@ -53,13 +93,13 @@ On Windows: Edit `%APPDATA%/Claude/claude_desktop_config.json`
   
   ```
   "mcpServers": {
-    "anki": {
+    "anki-mcp": {
       "command": "uv",
       "args": [
         "--directory",
         "/Users/path/to/anki-mcp",
         "run",
-        "anki"
+        "anki-mcp"
       ]
     }
   }
@@ -71,10 +111,10 @@ On Windows: Edit `%APPDATA%/Claude/claude_desktop_config.json`
   
   ```
   "mcpServers": {
-    "anki": {
+    "anki-mcp": {
       "command": "uvx",
       "args": [
-        "anki"
+        "anki-mcp"
       ]
     }
   }
@@ -116,7 +156,7 @@ experience, we strongly recommend using the [MCP Inspector](https://github.com/m
 You can launch the MCP Inspector via [`npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) with this command:
 
 ```bash
-npx @modelcontextprotocol/inspector uv --directory /path/to/anki-mcp run anki
+npx @modelcontextprotocol/inspector uv --directory /path/to/anki-mcp run anki-mcp
 ```
 
 Upon launching, the Inspector will display a URL that you can access in your browser to begin debugging.
