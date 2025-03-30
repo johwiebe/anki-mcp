@@ -1,7 +1,7 @@
-from pydantic import Field
 import mcp.types as types
 
 from .utils import make_anki_request
+
 
 async def get_model_fields(model_name: str) -> list[types.TextContent]:
     # Get field names

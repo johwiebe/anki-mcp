@@ -1,5 +1,5 @@
 [project]
-name = "anki"
+name = "anki-mcp"
 version = "0.1.0"
 description = "An Anki MCP server"
 readme = "README.md"
@@ -7,11 +7,16 @@ requires-python = ">=3.10"
 dependencies = [ "mcp>=1.5.0",]
 [[project.authors]]
 name = "Johannes Wiebe"
-email = "johannes.wiebe@flexciton.com"
+email = "johanneswiebe@posteo.de"
 
 [build-system]
 requires = [ "hatchling",]
 build-backend = "hatchling.build"
 
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
+
 [project.scripts]
-anki = "anki:main"
+anki-mcp = "anki_mcp:main"

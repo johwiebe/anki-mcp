@@ -1,8 +1,10 @@
-from typing import Dict, Annotated, List
-from pydantic import Field, BaseModel
-import mcp.types as types
+from typing import Annotated, Dict
 
-from .utils import make_anki_request, DEFAULT_DECK_NAME, DEFAULT_MODEL_NAME
+import mcp.types as types
+from pydantic import BaseModel, Field
+
+from .utils import DEFAULT_DECK_NAME, DEFAULT_MODEL_NAME, make_anki_request
+
 
 class Note(BaseModel):
     name: Annotated[str, Field(description="Name of the note", max_length=64)]
