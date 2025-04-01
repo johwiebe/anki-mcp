@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Entry point for the Anki MCP server.
-This allows the package to be run directly with `python -m anki`
+This allows the package to be run directly with `python -m anki_mcp`
 or as an installed executable.
 """
 
