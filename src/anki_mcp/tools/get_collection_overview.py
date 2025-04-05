@@ -8,6 +8,7 @@ async def get_collection_overview() -> list[types.TextContent]:
     - Available decks
     - Available note models
     - Fields for each model
+    - Tags used
     
     Returns a list of TextContent objects with formatted information.
     """
@@ -46,6 +47,20 @@ async def get_collection_overview() -> list[types.TextContent]:
                  "\n".join(f"- {model}" for model in models)
         )
     )
+
+    tags_result = await make_anki_request("getTags")
+    if not tags_result["success"]:
+        return [types.TextContent(
+            type="text",
+            text=f"\nFailed to retrieve tags: {tags_result['error']}"
+        )]
+    if tags := tags_result["result"]:
+        results.append(
+            types.TextContent(
+                type="text",
+                text=f"\nTags used in Anki ({len(tags)}): {', '.join(tags)}"
+            )
+        )
     
     # Get fields for each model
     for model_name in models:
