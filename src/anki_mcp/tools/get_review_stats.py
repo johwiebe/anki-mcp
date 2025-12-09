@@ -1,77 +1,97 @@
 import mcp.types as types
 from datetime import datetime, timedelta
+from typing import Optional
 from .utils import make_anki_request
 
 
-async def get_review_stats(
-    time_range: str = "month"
-) -> list[types.TextContent]:
+# Time range to days mapping
+TIME_RANGES = {
+    "day": 0,
+    "week": 7,
+    "month": 30,
+    "year": 365,
+    "all": None
+}
+
+
+async def get_review_stats(time_range: str = "month") -> list[types.TextContent]:
     """
     Get review statistics from Anki showing cards reviewed per day.
 
     Parameters:
     - time_range: Time range for statistics ("day", "week", "month", "year", "all")
     """
-    # Calculate date cutoff based on time_range
-    today = datetime.now().date()
+    # Validate and calculate cutoff date
+    cutoff_date = _get_cutoff_date(time_range)
+    if cutoff_date is False:
+        return _error_response(
+            f"Invalid time_range '{time_range}'. Valid options: {', '.join(TIME_RANGES.keys())}"
+        )
 
-    if time_range == "day":
-        cutoff_date = today
-    elif time_range == "week":
-        cutoff_date = today - timedelta(days=7)
-    elif time_range == "month":
-        cutoff_date = today - timedelta(days=30)
-    elif time_range == "year":
-        cutoff_date = today - timedelta(days=365)
-    elif time_range == "all":
-        cutoff_date = None  # No filtering
-    else:
-        return [
-            types.TextContent(
-                type="text",
-                text=f"Invalid time_range '{time_range}'. Valid options: day, week, month, year, all"
-            )
-        ]
-
-    # Get review statistics from Anki
+    # Fetch review data from Anki
     review_result = await make_anki_request("getNumCardsReviewedByDay")
-
     if not review_result["success"]:
-        return [
-            types.TextContent(
-                type="text",
-                text=f"Failed to retrieve review statistics: {review_result['error']}"
-            )
-        ]
+        return _error_response(f"Failed to retrieve review statistics: {review_result['error']}")
 
+    # Filter and format the results
     review_data = review_result["result"]
+    filtered_data = _filter_by_date(review_data, cutoff_date)
+    formatted_text = _format_review_data(filtered_data)
 
-    # Filter by date if cutoff_date is specified
-    if cutoff_date:
-        filtered_data = [
-            (date_str, count) for date_str, count in review_data
-            if _parse_date(date_str) >= cutoff_date
-        ]
-    else:
-        filtered_data = review_data
+    return [types.TextContent(type="text", text=formatted_text)]
 
-    # Format the output
+
+def _get_cutoff_date(time_range: str) -> Optional[datetime.date] | bool:
+    """
+    Calculate the cutoff date based on time range.
+
+    Returns:
+    - datetime.date for filtered ranges
+    - None for "all" (no filtering)
+    - False for invalid time ranges
+    """
+    if time_range not in TIME_RANGES:
+        return False
+
+    days = TIME_RANGES[time_range]
+    if days is None:
+        return None
+
+    today = datetime.now().date()
+    return today if days == 0 else today - timedelta(days=days)
+
+
+def _filter_by_date(review_data: list, cutoff_date: Optional[datetime.date]) -> list:
+    """Filter review data by cutoff date."""
+    if cutoff_date is None:
+        return review_data
+
+    return [
+        (date_str, count) for date_str, count in review_data
+        if _parse_date(date_str) >= cutoff_date
+    ]
+
+
+def _format_review_data(filtered_data: list) -> str:
+    """Format filtered review data into readable text."""
     if not filtered_data:
-        text = "No reviews found for the specified time range."
-    else:
-        total_cards = sum(count for _, count in filtered_data)
-        formatted_lines = [f"  {date_str}: {count} cards" for date_str, count in filtered_data]
+        return "No reviews found for the specified time range."
 
-        text = f"Cards reviewed ({len(filtered_data)} days, {total_cards} total reviews):\n"
-        text += "\n".join(formatted_lines)
+    total_cards = sum(count for _, count in filtered_data)
+    formatted_lines = [f"  {date_str}: {count} cards" for date_str, count in filtered_data]
 
-    return [types.TextContent(type="text", text=text)]
+    header = f"Cards reviewed ({len(filtered_data)} days, {total_cards} total reviews):\n"
+    return header + "\n".join(formatted_lines)
+
+
+def _error_response(message: str) -> list[types.TextContent]:
+    """Create an error response."""
+    return [types.TextContent(type="text", text=message)]
 
 
 def _parse_date(date_str: str) -> datetime.date:
     """Parse date string from Anki format to date object."""
     try:
-        # Anki returns dates in YYYY-MM-DD format
         return datetime.strptime(date_str, "%Y-%m-%d").date()
     except ValueError:
         # If parsing fails, return a very old date so it gets filtered out
