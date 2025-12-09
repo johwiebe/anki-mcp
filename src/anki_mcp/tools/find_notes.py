@@ -3,20 +3,13 @@ from .utils import make_anki_request
 from datetime import datetime
 
 
-def _truncate(value: str, max_length: int = 100) -> str:
-    """Truncate a string to max_length, adding ellipsis if needed."""
-    if len(value) > max_length:
-        return value[:max_length - 3] + "..."
-    return value
-
-
 def _format_note(note: dict) -> str:
     """Format a single note for display."""
     tags = ", ".join(note["tags"]) if note["tags"] else "(no tags)"
     mod_time = datetime.fromtimestamp(note["mod"]).strftime("%Y-%m-%d %H:%M:%S")
 
     fields_text = [
-        f"  - {name}: {_truncate(data['value'])}"
+        f"  - {name}: {data['value']}"
         for name, data in note["fields"].items()
     ]
 

@@ -79,8 +79,8 @@ async def test_find_notes_api_failure(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_find_notes_long_field_truncation(monkeypatch):
-    """Test that long field values are truncated at 100 characters."""
+async def test_find_notes_long_field_shown_in_full(monkeypatch):
+    """Test that long field values are shown in full."""
     long_value = "A" * 150  # 150 characters
     mock_notes = [
         {
@@ -103,9 +103,8 @@ async def test_find_notes_long_field_truncation(monkeypatch):
     result = await find_notes("*")
 
     text = result[0].text
-    # Should be truncated to 97 chars + "..."
-    assert "A" * 97 + "..." in text
-    assert "A" * 100 not in text
+    # Full value should be present
+    assert long_value in text
 
 
 @pytest.mark.asyncio
