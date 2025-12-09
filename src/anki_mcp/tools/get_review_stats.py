@@ -1,19 +1,16 @@
 import mcp.types as types
-from typing import Optional
 from datetime import datetime, timedelta
 from .utils import make_anki_request
 
 
 async def get_review_stats(
-    time_range: str = "month",
-    deck_name: Optional[str] = None
+    time_range: str = "month"
 ) -> list[types.TextContent]:
     """
     Get review statistics from Anki showing cards reviewed per day.
 
     Parameters:
     - time_range: Time range for statistics ("day", "week", "month", "year", "all")
-    - deck_name: Optional deck name to filter statistics (shows only reviews from this deck)
     """
     # Calculate date cutoff based on time_range
     today = datetime.now().date()
@@ -37,19 +34,6 @@ async def get_review_stats(
         ]
 
     # Get review statistics from Anki
-    if deck_name:
-        # When filtering by deck, we need to use a different approach
-        # Get reviews for the specific deck using findCards and card info
-        result = await _get_deck_review_stats(deck_name, cutoff_date)
-    else:
-        # Get all reviews across all decks
-        result = await _get_all_review_stats(cutoff_date)
-
-    return result
-
-
-async def _get_all_review_stats(cutoff_date: Optional[datetime.date]) -> list[types.TextContent]:
-    """Get review statistics for all decks."""
     review_result = await make_anki_request("getNumCardsReviewedByDay")
 
     if not review_result["success"]:
@@ -80,45 +64,6 @@ async def _get_all_review_stats(cutoff_date: Optional[datetime.date]) -> list[ty
 
         text = f"Cards reviewed ({len(filtered_data)} days, {total_cards} total reviews):\n"
         text += "\n".join(formatted_lines)
-
-    return [types.TextContent(type="text", text=text)]
-
-
-async def _get_deck_review_stats(deck_name: str, cutoff_date: Optional[datetime.date]) -> list[types.TextContent]:
-    """Get review statistics for a specific deck."""
-    # Note: AnkiConnect's getNumCardsReviewedByDay doesn't support deck filtering
-    # We need to use a workaround by finding reviewed cards in the deck
-    # This is an approximation based on cards in the deck that have review history
-
-    # For now, we'll get the deck stats which shows current state
-    # A full implementation would require tracking individual card reviews
-    deck_stats_result = await make_anki_request("getDeckStats", decks=[deck_name])
-
-    if not deck_stats_result["success"]:
-        return [
-            types.TextContent(
-                type="text",
-                text=f"Failed to retrieve deck statistics: {deck_stats_result['error']}"
-            )
-        ]
-
-    # Also try to get the overall review stats and note the limitation
-    all_reviews_result = await _get_all_review_stats(cutoff_date)
-
-    deck_stats = deck_stats_result["result"]
-    if deck_stats:
-        stats = deck_stats[0]
-        deck_info = (
-            f"Deck '{deck_name}' current statistics:\n"
-            f"  Total cards: {stats.get('total_in_deck', 'N/A')}\n"
-            f"  Reviews today: {stats.get('reviews_today', 'N/A')}\n\n"
-            f"Note: Per-day review history by deck is not available via AnkiConnect.\n"
-            f"Showing overall review statistics below:\n\n"
-        )
-        all_reviews_text = all_reviews_result[0].text
-        text = deck_info + all_reviews_text
-    else:
-        text = f"Deck '{deck_name}' not found."
 
     return [types.TextContent(type="text", text=text)]
 

@@ -10,7 +10,7 @@ app = FastMCP("anki")
 
 # Register tools with the app
 app.tool(name="get-collection-overview", description="Get comprehensive information about the Anki collection including decks, models, and fields")(get_collection_overview)
-app.tool(name="get-review-stats", description="Get review statistics from Anki showing cards reviewed per day, with optional time range and deck filtering")(get_review_stats)
+app.tool(name="get-review-stats", description="Get review statistics from Anki showing cards reviewed per day, with optional time range filtering")(get_review_stats)
 app.tool(name='find-notes', description='Find notes matching a query in Anki')(find_notes)
 app.tool(name='add-or-update-notes', description="Add new notes or update existing ones in Anki")(add_or_update_notes)
 
