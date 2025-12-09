@@ -22,11 +22,10 @@ async def get_review_stats(time_range: str = "month") -> list[types.TextContent]
     - time_range: Time range for statistics ("day", "week", "month", "year", "all")
     """
     # Validate and calculate cutoff date
-    cutoff_date = _get_cutoff_date(time_range)
-    if cutoff_date is False:
-        return _error_response(
-            f"Invalid time_range '{time_range}'. Valid options: {', '.join(TIME_RANGES.keys())}"
-        )
+    try:
+        cutoff_date = _get_cutoff_date(time_range)
+    except ValueError as e:
+        return _error_response(str(e))
 
     # Fetch review data from Anki
     review_result = await make_anki_request("getNumCardsReviewedByDay")
@@ -41,17 +40,22 @@ async def get_review_stats(time_range: str = "month") -> list[types.TextContent]
     return [types.TextContent(type="text", text=formatted_text)]
 
 
-def _get_cutoff_date(time_range: str) -> Optional[datetime.date] | bool:
+def _get_cutoff_date(time_range: str) -> Optional[datetime.date]:
     """
     Calculate the cutoff date based on time range.
 
+    Args:
+        time_range: The time range identifier
+
     Returns:
-    - datetime.date for filtered ranges
-    - None for "all" (no filtering)
-    - False for invalid time ranges
+        datetime.date for filtered ranges, or None for "all" (no filtering)
+
+    Raises:
+        ValueError: If time_range is not a valid option
     """
     if time_range not in TIME_RANGES:
-        return False
+        valid_options = ', '.join(TIME_RANGES.keys())
+        raise ValueError(f"Invalid time_range '{time_range}'. Valid options: {valid_options}")
 
     days = TIME_RANGES[time_range]
     if days is None:
