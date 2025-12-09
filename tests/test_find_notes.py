@@ -151,3 +151,100 @@ async def test_find_notes_special_characters_in_query(monkeypatch):
 
     assert len(result) == 1
     assert "No notes found" in result[0].text
+
+
+@pytest.mark.asyncio
+async def test_find_notes_limit_results(monkeypatch):
+    """Test that results are limited when exceeding the limit parameter."""
+    # Create 30 mock notes
+    mock_notes = [
+        {
+            "noteId": i,
+            "modelName": "Basic",
+            "tags": [],
+            "fields": {
+                "Front": {"value": f"Question {i}", "order": 0},
+                "Back": {"value": f"Answer {i}", "order": 1}
+            },
+            "mod": 1700000000 + i
+        }
+        for i in range(30)
+    ]
+
+    async def mock_anki_request(action, **kwargs):
+        return {"success": True, "result": mock_notes}
+
+    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+
+    # Test with default limit (20)
+    result = await find_notes("deck:Test")
+
+    text = result[0].text
+    assert "Showing 20 of 30 notes" in text
+    assert "use a more specific query or increase limit to see more" in text
+    # Should have notes 0-19 but not 20+
+    assert "Note ID: 0" in text
+    assert "Note ID: 19" in text
+    assert "Note ID: 20" not in text
+
+
+@pytest.mark.asyncio
+async def test_find_notes_custom_limit(monkeypatch):
+    """Test that custom limit parameter works."""
+    mock_notes = [
+        {
+            "noteId": i,
+            "modelName": "Basic",
+            "tags": [],
+            "fields": {
+                "Front": {"value": f"Question {i}", "order": 0},
+                "Back": {"value": f"Answer {i}", "order": 1}
+            },
+            "mod": 1700000000 + i
+        }
+        for i in range(10)
+    ]
+
+    async def mock_anki_request(action, **kwargs):
+        return {"success": True, "result": mock_notes}
+
+    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+
+    # Test with custom limit of 5
+    result = await find_notes("deck:Test", limit=5)
+
+    text = result[0].text
+    assert "Showing 5 of 10 notes" in text
+    assert "Note ID: 0" in text
+    assert "Note ID: 4" in text
+    assert "Note ID: 5" not in text
+
+
+@pytest.mark.asyncio
+async def test_find_notes_under_limit(monkeypatch):
+    """Test that no truncation message appears when results are under limit."""
+    mock_notes = [
+        {
+            "noteId": i,
+            "modelName": "Basic",
+            "tags": [],
+            "fields": {
+                "Front": {"value": f"Question {i}", "order": 0},
+                "Back": {"value": f"Answer {i}", "order": 1}
+            },
+            "mod": 1700000000 + i
+        }
+        for i in range(5)
+    ]
+
+    async def mock_anki_request(action, **kwargs):
+        return {"success": True, "result": mock_notes}
+
+    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+
+    result = await find_notes("deck:Test", limit=10)
+
+    text = result[0].text
+    assert "Found 5 notes matching query: 'deck:Test'" in text
+    assert "Showing" not in text
+    assert "increase limit" not in text

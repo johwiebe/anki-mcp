@@ -2,12 +2,13 @@ import mcp.types as types
 from .utils import make_anki_request
 from datetime import datetime
 
-async def find_notes(query: str) -> list[types.TextContent]:
+async def find_notes(query: str, limit: int = 20) -> list[types.TextContent]:
     result = await make_anki_request("notesInfo", query=query)
-    
+
     if result["success"]:
         notes = result["result"]
-        
+        total_count = len(notes)
+
         if not notes:
             return [
                 types.TextContent(
@@ -15,9 +16,12 @@ async def find_notes(query: str) -> list[types.TextContent]:
                     text=f"No notes found matching query: '{query}'",
                 )
             ]
-        
+
+        # Apply limit
+        limited_notes = notes[:limit]
+
         notes_info = []
-        for note in notes:
+        for note in limited_notes:
             note_id = note["noteId"]
             model_name = note["modelName"]
             tags = ", ".join(note["tags"]) if note["tags"] else "(no tags)"
@@ -43,10 +47,16 @@ async def find_notes(query: str) -> list[types.TextContent]:
             )
             notes_info.append(note_text)
         
+        # Build header message
+        if total_count > limit:
+            header = f"Showing {len(limited_notes)} of {total_count} notes matching query: '{query}' (use a more specific query or increase limit to see more)"
+        else:
+            header = f"Found {total_count} notes matching query: '{query}'"
+
         return [
             types.TextContent(
                 type="text",
-                text=f"Found {len(notes)} notes matching query: '{query}'\n\n" + "\n\n".join(notes_info),
+                text=header + "\n\n" + "\n\n".join(notes_info),
             )
         ]
     else:
