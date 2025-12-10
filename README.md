@@ -16,6 +16,16 @@ This MCP server enables AI assistants to interact with Anki through the followin
 
 - **find-notes**: Allows querying notes using the [Anki searching syntax](https://docs.ankiweb.net/searching.html)
 
+- **find-cards**: Find card IDs matching a query in Anki
+
+- **suspend-cards**: Suspend cards by their card IDs
+
+- **unsuspend-cards**: Unsuspend cards by their card IDs
+
+### Resources
+
+- **anki://docs/search-syntax**: Comprehensive reference guide for Anki's search query syntax. Includes basic operators, field searches, tags, decks, card states, properties, timing, IDs, custom data, and advanced query examples. This resource provides language-agnostic documentation useful for anyone constructing search queries with the find-notes or find-cards tools
+
 ## Requirements
 
 - Anki must be installed and running

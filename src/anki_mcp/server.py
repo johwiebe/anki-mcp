@@ -7,6 +7,7 @@ from anki_mcp.tools.get_review_stats import get_review_stats
 from anki_mcp.tools.find_notes import find_notes
 from anki_mcp.tools.find_cards import find_cards
 from anki_mcp.tools.suspend_cards import suspend_cards, unsuspend_cards
+from anki_mcp.resources.search_syntax import get_search_syntax_docs
 
 app = FastMCP("anki")
 
@@ -18,6 +19,9 @@ app.tool(name='find-cards', description='Find card IDs matching a query in Anki'
 app.tool(name='add-or-update-notes', description="Add new notes or update existing ones in Anki")(add_or_update_notes)
 app.tool(name='suspend-cards', description="Suspend cards by their card IDs")(suspend_cards)
 app.tool(name='unsuspend-cards', description="Unsuspend cards by their card IDs")(unsuspend_cards)
+
+# Register resources with the app
+app.resource("anki://docs/search-syntax")(get_search_syntax_docs)
 
 if __name__ == "__main__":
     # Initialize and run the server
