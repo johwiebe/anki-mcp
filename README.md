@@ -26,6 +26,15 @@ This MCP server enables AI assistants to interact with Anki through the followin
 
 - **anki://docs/search-syntax**: Comprehensive reference guide for Anki's search query syntax. Includes basic operators, field searches, tags, decks, card states, properties, timing, IDs, custom data, and advanced query examples. This resource provides language-agnostic documentation useful for anyone constructing search queries with the find-notes or find-cards tools
 
+### Prompts
+
+- **get_create_language_cards_prompt**: Guides the creation of effective language learning flashcards with best practices for spaced repetition. This prompt template helps create short, natural example sentences and vocabulary cards appropriate for different proficiency levels (A1-C2). It follows a structured workflow: check collection → generate examples → review with user → add confirmed cards. Parameters:
+  - `target_language`: The language being learned (e.g., "Spanish", "French")
+  - `focus`: What to focus on (e.g., "common verbs", "food vocabulary")
+  - `source_language`: Native/source language (default: "English")
+  - `proficiency_level`: Learning level A1-C2 (default: "B1")
+  - `target_deck`: Anki deck to add cards to (default: "Default")
+
 ## Requirements
 
 - Anki must be installed and running

@@ -8,6 +8,7 @@ from anki_mcp.tools.find_notes import find_notes
 from anki_mcp.tools.find_cards import find_cards
 from anki_mcp.tools.suspend_cards import suspend_cards, unsuspend_cards
 from anki_mcp.resources.search_syntax import get_search_syntax_docs
+from anki_mcp.prompts.language_learning import get_create_language_cards_prompt
 
 app = FastMCP("anki")
 
@@ -22,6 +23,9 @@ app.tool(name='unsuspend-cards', description="Unsuspend cards by their card IDs"
 
 # Register resources with the app
 app.resource("anki://docs/search-syntax")(get_search_syntax_docs)
+
+# Register prompts with the app
+app.prompt()(get_create_language_cards_prompt)
 
 if __name__ == "__main__":
     # Initialize and run the server
