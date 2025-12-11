@@ -1,6 +1,5 @@
 """Tests for the language learning prompt."""
 
-import pytest
 from anki_mcp.prompts.language_learning import (
     get_create_language_cards_prompt,
     create_language_cards_prompt,
