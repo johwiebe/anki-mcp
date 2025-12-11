@@ -54,3 +54,24 @@ This MCP server enables AI assistants to interact with Anki through the followin
   ```
 
 3. Restart Claude Desktop.
+
+## Optional: Language Learning Skill
+
+This repository includes a complementary Claude skill that provides best practices for creating effective language learning flashcards. The skill works alongside the MCP server:
+
+- **MCP Server**: Provides the tools to interact with Anki
+- **Skill**: Provides guidance on how to use those tools effectively
+
+To use the skill, copy `.claude/skills/language-learning.md` to your project's `.claude/skills/` directory. The AI will automatically invoke it when relevant for language learning flashcard creation.
+
+The skill includes:
+- Recommended workflow for card creation
+- Card quality guidelines (length, content, cloze usage)
+- Note type variety recommendations
+- Examples of good vs bad cards
+- Proficiency level guidelines (CEFR A1-C2)
+
+This separation allows:
+- Using the MCP server for any Anki workflow (not just language learning)
+- Customizing or replacing the skill based on your learning methodology
+- Sharing skills independently from the MCP infrastructure
