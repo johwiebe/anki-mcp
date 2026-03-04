@@ -1,10 +1,9 @@
-name: Run Tests
+name: Publish to PyPI
 
 on:
-  pull_request:
-    branches: [ main ]
   push:
-    branches: [ main ]
+    tags:
+      - "v*"
 
 jobs:
   test:
@@ -15,27 +14,47 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-        
+
     - name: Install uv
       run: |
         curl -LsSf https://astral.sh/uv/install.sh | sh
         echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-        
+
     - name: Install dependencies
       run: |
         uv pip install --system -e .
         uv pip install --system pytest pytest-asyncio
-        
+
     - name: Run tests
       run: |
         python -m pytest -xvs tests/
-        
-    - name: Check code style with ruff
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install uv
       run: |
-        uv pip install --system ruff
-        ruff check . 
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Build package
+      run: uv build
+
+    - name: Publish to PyPI
+      run: uv publish
