@@ -33,45 +33,59 @@ This MCP server enables AI assistants to interact with Anki through the followin
 - This MCP server uses `uv`. To install `uv`, follow the [official instructions](https://docs.astral.sh/uv/getting-started/installation/).
 
 
-## Configuration
+## Installation
+
+### As a Claude Code plugin (recommended)
+
+Install as a plugin to get both the MCP server and language learning skill in one step:
+
+```
+/plugin install anki-mcp
+```
+
+### Manual setup for Claude Code
+
+1. Add the MCP server:
+   ```
+   claude mcp add anki -- uvx anki-mcp
+   ```
+
+2. Optionally, copy the skill files from `skills/` into your project's `.claude/skills/` directory for language learning guidance.
 
 ### Claude Desktop
 
 1. Open your Claude Desktop config file:
-  - MacOS: `~/Library/Application\ Support/Claude/claude_desktop_config.json`
-  - Windows: `%APPDATA%/Claude/claude_desktop_config.json`
+   - macOS: `~/Library/Application\ Support/Claude/claude_desktop_config.json`
+   - Windows: `%APPDATA%/Claude/claude_desktop_config.json`
 
-2. Add `anki-mcp` to the `mcpServers` section:  
-  ```
-  "mcpServers": {
-    "anki-mcp": {
-      "command": "uvx",
-      "args": [
-        "anki-mcp"
-      ]
-    }
-  }
-  ```
+2. Add `anki-mcp` to the `mcpServers` section:
+   ```json
+   "mcpServers": {
+     "anki": {
+       "command": "uvx",
+       "args": ["anki-mcp"]
+     }
+   }
+   ```
 
 3. Restart Claude Desktop.
 
-## Optional: Language Learning Skill
+### MCP server only
 
-This repository includes a complementary Claude skill that provides best practices for creating effective language learning flashcards. The skill works alongside the MCP server:
+For other MCP-compatible clients, run the server directly:
 
-- **MCP Server**: Provides the tools to interact with Anki
-- **Skill**: Provides guidance on how to use those tools effectively
+```
+uvx anki-mcp
+```
 
-To use the skill, copy `.claude/skills/language-learning.md` to your project's `.claude/skills/` directory. The AI will automatically invoke it when relevant for language learning flashcard creation.
+## Language Learning Skill
 
-The skill includes:
+This plugin includes a complementary skill that provides best practices for creating effective language learning flashcards. When installed as a plugin, the skill is automatically available. The skill includes:
+
 - Recommended workflow for card creation
 - Card quality guidelines (length, content, cloze usage)
 - Note type variety recommendations
 - Examples of good vs bad cards
 - Proficiency level guidelines (CEFR A1-C2)
 
-This separation allows:
-- Using the MCP server for any Anki workflow (not just language learning)
-- Customizing or replacing the skill based on your learning methodology
-- Sharing skills independently from the MCP infrastructure
+The MCP server works independently of the skill, so you can use it for any Anki workflow — not just language learning.
