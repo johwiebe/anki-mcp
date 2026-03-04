@@ -9,8 +9,8 @@ from anki_mcp.tools.utils import DEFAULT_DECK_NAME, DEFAULT_MODEL_NAME, make_ank
 class Note(BaseModel):
     name: Annotated[str, Field(description="Name of the note", max_length=64)]
     id: Annotated[int | None, Field(description="Note ID, if the note already exists. If this is populated the existing note will be updated. If this is `None` a new note will be created.")]
-    deck: Annotated[str, Field(description="Deck name (optional)", default=DEFAULT_DECK_NAME)]
-    model: Annotated[str, Field(description="Model name (optional)", default=DEFAULT_MODEL_NAME)]
+    deckName: Annotated[str, Field(description="Deck name (optional)", default=DEFAULT_DECK_NAME)]
+    modelName: Annotated[str, Field(description="Model name (optional)", default=DEFAULT_MODEL_NAME)]
     fields: Annotated[Dict[str, str], Field(description="Field values for the note (varies by model)")]
     tags: Annotated[Optional[List[str]], Field(description="Tags to assign to the note (optional)", default=None)]
 
@@ -76,8 +76,8 @@ async def add_note(note: Note):
         return {"success": False, "error": "Note has no fields"}
         
     note_data = {
-        "deckName": note.deck,
-        "modelName": note.model,
+        "deckName": note.deckName,
+        "modelName": note.modelName,
         "fields": note.fields,
         "options": {"allowDuplicate": False},
     }

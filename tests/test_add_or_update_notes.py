@@ -9,8 +9,8 @@ async def test_add_note_success(monkeypatch):
     test_note = Note(
         name="Test Note",
         id=None,
-        deck="Test Deck",
-        model="Basic",
+        deckName="Test Deck",
+        modelName="Basic",
         fields={"Front": "Test Question", "Back": "Test Answer"},
         tags=["test", "example"]
     )
@@ -38,8 +38,8 @@ async def test_add_note_no_fields_failure(monkeypatch):
     test_note = Note(
         name="Empty Note",
         id=None,
-        deck="Test Deck",
-        model="Basic",
+        deckName="Test Deck",
+        modelName="Basic",
         fields={},
         tags=["test"]
     )
@@ -62,8 +62,8 @@ async def test_add_note_failure(monkeypatch):
     test_note = Note(
         name="Test Note",
         id=None,
-        deck="Test Deck",
-        model="Basic",
+        deckName="Test Deck",
+        modelName="Basic",
         fields={"Front": "Test Question", "Back": "Test Answer"},
         tags=None
     )
@@ -87,8 +87,8 @@ async def test_update_note_success(monkeypatch):
     test_note = Note(
         name="Test Note",
         id=5678,
-        deck="Test Deck",
-        model="Basic",
+        deckName="Test Deck",
+        modelName="Basic",
         fields={"Front": "Updated Question", "Back": "Updated Answer"},
         tags=["updated", "test"]
     )
@@ -114,8 +114,8 @@ async def test_update_note_fields_only(monkeypatch):
     test_note = Note(
         name="Fields Only Note",
         id=5678,
-        deck="Test Deck",
-        model="Basic",
+        deckName="Test Deck",
+        modelName="Basic",
         fields={"Front": "Updated Question", "Back": "Updated Answer"},
         tags=None
     )
@@ -141,8 +141,8 @@ async def test_update_note_tags_only(monkeypatch):
     test_note = Note(
         name="Tags Only Note",
         id=5678,
-        deck="Test Deck",
-        model="Basic",
+        deckName="Test Deck",
+        modelName="Basic",
         fields={},
         tags=["updated", "test"]
     )
@@ -168,8 +168,8 @@ async def test_update_note_empty_failure(monkeypatch):
     test_note = Note(
         name="Empty Note",
         id=5678,
-        deck="Test Deck",
-        model="Basic",
+        deckName="Test Deck",
+        modelName="Basic",
         fields={},
         tags=None
     )
@@ -192,8 +192,8 @@ async def test_update_note_failure(monkeypatch):
     test_note = Note(
         name="Test Note",
         id=5678,
-        deck="Test Deck",
-        model="Basic",
+        deckName="Test Deck",
+        modelName="Basic",
         fields={"Front": "Updated Question", "Back": "Updated Answer"},
         tags=["updated", "test"]
     )
@@ -225,16 +225,16 @@ async def test_add_or_update_notes_all_success(monkeypatch):
         Note(
             name="New Note",
             id=None,
-            deck="Test Deck",
-            model="Basic",
+            deckName="Test Deck",
+            modelName="Basic",
             fields={"Front": "Question 1", "Back": "Answer 1"},
             tags=["test"]
         ),
         Note(
             name="Existing Note",
             id=5678,
-            deck="Test Deck",
-            model="Basic",
+            deckName="Test Deck",
+            modelName="Basic",
             fields={"Front": "Question 2", "Back": "Answer 2"},
             tags=["test", "updated"]
         )
@@ -272,24 +272,24 @@ async def test_add_or_update_notes_mixed_results(monkeypatch):
         Note(
             name="Success Note",
             id=None,
-            deck="Test Deck",
-            model="Basic",
+            deckName="Test Deck",
+            modelName="Basic",
             fields={"Front": "Question 1", "Back": "Answer 1"},
             tags=["test"]
         ),
         Note(
             name="Failed Note",
             id=None,
-            deck="Test Deck",
-            model="Invalid",
+            deckName="Test Deck",
+            modelName="Invalid",
             fields={"Front": "Question 2", "Back": "Answer 2"},
             tags=["test"]
         ),
         Note(
             name="Success Update",
             id=5678,
-            deck="Test Deck",
-            model="Basic",
+            deckName="Test Deck",
+            modelName="Basic",
             fields={"Front": "Question 3", "Back": "Answer 3"},
             tags=["test", "updated"]
         )
@@ -325,16 +325,16 @@ async def test_add_or_update_notes_all_failure(monkeypatch):
         Note(
             name="Failed Note 1",
             id=None,
-            deck="Test Deck",
-            model="Invalid",
+            deckName="Test Deck",
+            modelName="Invalid",
             fields={"Front": "Question 1", "Back": "Answer 1"},
             tags=["test"]
         ),
         Note(
             name="Failed Note 2",
             id=9999,
-            deck="Test Deck",
-            model="Basic",
+            deckName="Test Deck",
+            modelName="Basic",
             fields={"Front": "Question 2"},
             tags=["test"]
         )
