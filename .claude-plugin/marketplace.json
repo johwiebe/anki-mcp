@@ -1,0 +1,19 @@
+{
+  "name": "anki-mcp",
+  "owner": {
+    "name": "Johannes Wiebe"
+  },
+  "plugins": [
+    {
+      "name": "anki-mcp",
+      "source": ".",
+      "description": "Anki flashcard management with language learning skills",
+      "version": "0.2.0",
+      "author": {
+        "name": "Johannes Wiebe"
+      },
+      "repository": "https://github.com/johwiebe/anki-mcp",
+      "tags": ["anki", "flashcards", "language-learning"]
+    }
+  ]
+}
