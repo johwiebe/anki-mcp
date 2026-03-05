@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "anki-mcp",
-      "source": ".",
+      "source": "./",
       "description": "Anki flashcard management with language learning skills",
       "version": "0.2.0",
       "author": {
