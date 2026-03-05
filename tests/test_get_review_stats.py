@@ -6,18 +6,16 @@ from anki_mcp.tools.get_review_stats import get_review_stats
 @pytest.mark.asyncio
 async def test_get_review_stats_basic_success(monkeypatch):
     """Test retrieving basic review statistics."""
-    review_data = [
-        ["2024-01-01", 50],
-        ["2024-01-02", 75],
-        ["2024-01-03", 60]
-    ]
+    review_data = [["2024-01-01", 50], ["2024-01-02", 75], ["2024-01-03", 60]]
 
     async def mock_anki_request(action, **kwargs):
         if action == "getNumCardsReviewedByDay":
             return {"success": True, "result": review_data}
         return {"success": False, "error": "Unexpected action"}
 
-    monkeypatch.setattr("anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request
+    )
 
     # Use time_range="all" to include all historical dates
     result = await get_review_stats(time_range="all")
@@ -40,8 +38,8 @@ async def test_get_review_stats_time_range_week(monkeypatch):
 
     review_data = [
         [old_date.strftime("%Y-%m-%d"), 100],  # Should be filtered out
-        [week_ago.strftime("%Y-%m-%d"), 50],   # Should be included
-        [today.strftime("%Y-%m-%d"), 75]        # Should be included
+        [week_ago.strftime("%Y-%m-%d"), 50],  # Should be included
+        [today.strftime("%Y-%m-%d"), 75],  # Should be included
     ]
 
     async def mock_anki_request(action, **kwargs):
@@ -49,7 +47,9 @@ async def test_get_review_stats_time_range_week(monkeypatch):
             return {"success": True, "result": review_data}
         return {"success": False, "error": "Unexpected action"}
 
-    monkeypatch.setattr("anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request
+    )
 
     result = await get_review_stats(time_range="week")
 
@@ -66,7 +66,7 @@ async def test_get_review_stats_time_range_day(monkeypatch):
 
     review_data = [
         [yesterday.strftime("%Y-%m-%d"), 50],  # Should be filtered out
-        [today.strftime("%Y-%m-%d"), 75]        # Should be included
+        [today.strftime("%Y-%m-%d"), 75],  # Should be included
     ]
 
     async def mock_anki_request(action, **kwargs):
@@ -74,7 +74,9 @@ async def test_get_review_stats_time_range_day(monkeypatch):
             return {"success": True, "result": review_data}
         return {"success": False, "error": "Unexpected action"}
 
-    monkeypatch.setattr("anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request
+    )
 
     result = await get_review_stats(time_range="day")
 
@@ -86,18 +88,16 @@ async def test_get_review_stats_time_range_day(monkeypatch):
 @pytest.mark.asyncio
 async def test_get_review_stats_time_range_all(monkeypatch):
     """Test retrieving all review statistics without time filtering."""
-    review_data = [
-        ["2023-01-01", 100],
-        ["2024-01-01", 50],
-        ["2024-12-01", 75]
-    ]
+    review_data = [["2023-01-01", 100], ["2024-01-01", 50], ["2024-12-01", 75]]
 
     async def mock_anki_request(action, **kwargs):
         if action == "getNumCardsReviewedByDay":
             return {"success": True, "result": review_data}
         return {"success": False, "error": "Unexpected action"}
 
-    monkeypatch.setattr("anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request
+    )
 
     result = await get_review_stats(time_range="all")
 
@@ -119,12 +119,15 @@ async def test_get_review_stats_invalid_time_range(monkeypatch):
 @pytest.mark.asyncio
 async def test_get_review_stats_api_failure(monkeypatch):
     """Test handling of API failure."""
+
     async def mock_anki_request(action, **kwargs):
         if action == "getNumCardsReviewedByDay":
             return {"success": False, "error": "Anki not connected"}
         return {"success": False, "error": "Unexpected action"}
 
-    monkeypatch.setattr("anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request
+    )
 
     result = await get_review_stats()
 
@@ -135,12 +138,15 @@ async def test_get_review_stats_api_failure(monkeypatch):
 @pytest.mark.asyncio
 async def test_get_review_stats_empty_data(monkeypatch):
     """Test handling of empty review data."""
+
     async def mock_anki_request(action, **kwargs):
         if action == "getNumCardsReviewedByDay":
             return {"success": True, "result": []}
         return {"success": False, "error": "Unexpected action"}
 
-    monkeypatch.setattr("anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.get_review_stats.make_anki_request", mock_anki_request
+    )
 
     result = await get_review_stats()
 

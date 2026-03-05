@@ -12,13 +12,30 @@ from anki_mcp.resources.search_syntax import get_search_syntax_docs
 app = FastMCP("anki")
 
 # Register tools with the app
-app.tool(name="get-collection-overview", description="Get comprehensive information about the Anki collection including decks, models, and fields")(get_collection_overview)
-app.tool(name="get-review-stats", description="Get review statistics from Anki showing cards reviewed per day, with optional time range filtering")(get_review_stats)
-app.tool(name='find-notes', description='Find notes matching a query in Anki')(find_notes)
-app.tool(name='find-cards', description='Find card IDs matching a query in Anki')(find_cards)
-app.tool(name='add-or-update-notes', description="Add new notes or update existing ones in Anki")(add_or_update_notes)
-app.tool(name='suspend-cards', description="Suspend cards by their card IDs")(suspend_cards)
-app.tool(name='unsuspend-cards', description="Unsuspend cards by their card IDs")(unsuspend_cards)
+app.tool(
+    name="get-collection-overview",
+    description="Get comprehensive information about the Anki collection including decks, models, and fields",
+)(get_collection_overview)
+app.tool(
+    name="get-review-stats",
+    description="Get review statistics from Anki showing cards reviewed per day, with optional time range filtering",
+)(get_review_stats)
+app.tool(name="find-notes", description="Find notes matching a query in Anki")(
+    find_notes
+)
+app.tool(name="find-cards", description="Find card IDs matching a query in Anki")(
+    find_cards
+)
+app.tool(
+    name="add-or-update-notes",
+    description="Add new notes or update existing ones in Anki",
+)(add_or_update_notes)
+app.tool(name="suspend-cards", description="Suspend cards by their card IDs")(
+    suspend_cards
+)
+app.tool(name="unsuspend-cards", description="Unsuspend cards by their card IDs")(
+    unsuspend_cards
+)
 
 # Register resources with the app
 app.resource("anki://docs/search-syntax")(get_search_syntax_docs)
@@ -26,4 +43,5 @@ app.resource("anki://docs/search-syntax")(get_search_syntax_docs)
 if __name__ == "__main__":
     # Initialize and run the server
     import mcp
-    mcp.run(transport='stdio')
+
+    mcp.run(transport="stdio")

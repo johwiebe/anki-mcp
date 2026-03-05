@@ -9,8 +9,7 @@ def _format_note(note: dict) -> str:
     mod_time = datetime.fromtimestamp(note["mod"]).strftime("%Y-%m-%d %H:%M:%S")
 
     fields_text = [
-        f"  - {name}: {data['value']}"
-        for name, data in note["fields"].items()
+        f"  - {name}: {data['value']}" for name, data in note["fields"].items()
     ]
 
     return (

@@ -5,12 +5,15 @@ from anki_mcp.tools.suspend_cards import suspend_cards, unsuspend_cards
 @pytest.mark.asyncio
 async def test_suspend_cards_success(monkeypatch):
     """Test successful card suspension."""
+
     async def mock_anki_request(action, **kwargs):
         assert action == "suspend"
         assert kwargs["cards"] == [1234, 5678]
         return {"success": True, "result": True}
 
-    monkeypatch.setattr("anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request
+    )
 
     result = await suspend_cards([1234, 5678])
 
@@ -21,11 +24,14 @@ async def test_suspend_cards_success(monkeypatch):
 @pytest.mark.asyncio
 async def test_suspend_cards_already_suspended(monkeypatch):
     """Test suspending cards that are already suspended."""
+
     async def mock_anki_request(action, **kwargs):
         assert action == "suspend"
         return {"success": True, "result": False}
 
-    monkeypatch.setattr("anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request
+    )
 
     result = await suspend_cards([1234])
 
@@ -37,10 +43,13 @@ async def test_suspend_cards_already_suspended(monkeypatch):
 @pytest.mark.asyncio
 async def test_suspend_cards_api_failure(monkeypatch):
     """Test handling of API errors during suspension."""
+
     async def mock_anki_request(action, **kwargs):
         return {"success": False, "error": "Card not found"}
 
-    monkeypatch.setattr("anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request
+    )
 
     result = await suspend_cards([9999])
 
@@ -60,12 +69,15 @@ async def test_suspend_cards_empty_list():
 @pytest.mark.asyncio
 async def test_suspend_cards_single_card(monkeypatch):
     """Test suspending a single card."""
+
     async def mock_anki_request(action, **kwargs):
         assert action == "suspend"
         assert kwargs["cards"] == [1234]
         return {"success": True, "result": True}
 
-    monkeypatch.setattr("anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request
+    )
 
     result = await suspend_cards([1234])
 
@@ -76,12 +88,15 @@ async def test_suspend_cards_single_card(monkeypatch):
 @pytest.mark.asyncio
 async def test_unsuspend_cards_success(monkeypatch):
     """Test successful card unsuspension."""
+
     async def mock_anki_request(action, **kwargs):
         assert action == "unsuspend"
         assert kwargs["cards"] == [1234, 5678]
         return {"success": True, "result": True}
 
-    monkeypatch.setattr("anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request
+    )
 
     result = await unsuspend_cards([1234, 5678])
 
@@ -92,11 +107,14 @@ async def test_unsuspend_cards_success(monkeypatch):
 @pytest.mark.asyncio
 async def test_unsuspend_cards_not_suspended(monkeypatch):
     """Test unsuspending cards that were not suspended."""
+
     async def mock_anki_request(action, **kwargs):
         assert action == "unsuspend"
         return {"success": True, "result": False}
 
-    monkeypatch.setattr("anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request
+    )
 
     result = await unsuspend_cards([1234])
 
@@ -108,10 +126,13 @@ async def test_unsuspend_cards_not_suspended(monkeypatch):
 @pytest.mark.asyncio
 async def test_unsuspend_cards_api_failure(monkeypatch):
     """Test handling of API errors during unsuspension."""
+
     async def mock_anki_request(action, **kwargs):
         return {"success": False, "error": "Card not found"}
 
-    monkeypatch.setattr("anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request
+    )
 
     result = await unsuspend_cards([9999])
 
@@ -131,12 +152,15 @@ async def test_unsuspend_cards_empty_list():
 @pytest.mark.asyncio
 async def test_unsuspend_cards_single_card(monkeypatch):
     """Test unsuspending a single card."""
+
     async def mock_anki_request(action, **kwargs):
         assert action == "unsuspend"
         assert kwargs["cards"] == [1234]
         return {"success": True, "result": True}
 
-    monkeypatch.setattr("anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.suspend_cards.make_anki_request", mock_anki_request
+    )
 
     result = await unsuspend_cards([1234])
 

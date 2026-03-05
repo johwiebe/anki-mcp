@@ -7,9 +7,11 @@ or as an installed executable.
 
 from .server import app
 
+
 def main():
     """Run the Anki MCP server."""
-    app.run(transport='stdio')
+    app.run(transport="stdio")
+
 
 if __name__ == "__main__":
     main()

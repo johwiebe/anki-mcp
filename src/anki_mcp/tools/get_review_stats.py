@@ -5,13 +5,7 @@ from .utils import make_anki_request
 
 
 # Time range to days mapping
-TIME_RANGES = {
-    "day": 0,
-    "week": 7,
-    "month": 30,
-    "year": 365,
-    "all": None
-}
+TIME_RANGES = {"day": 0, "week": 7, "month": 30, "year": 365, "all": None}
 
 
 async def get_review_stats(time_range: str = "month") -> list[types.TextContent]:
@@ -30,7 +24,9 @@ async def get_review_stats(time_range: str = "month") -> list[types.TextContent]
     # Fetch review data from Anki
     review_result = await make_anki_request("getNumCardsReviewedByDay")
     if not review_result["success"]:
-        return _error_response(f"Failed to retrieve review statistics: {review_result['error']}")
+        return _error_response(
+            f"Failed to retrieve review statistics: {review_result['error']}"
+        )
 
     # Filter and format the results
     review_data = review_result["result"]
@@ -54,8 +50,10 @@ def _get_cutoff_date(time_range: str) -> Optional[datetime.date]:
         ValueError: If time_range is not a valid option
     """
     if time_range not in TIME_RANGES:
-        valid_options = ', '.join(TIME_RANGES.keys())
-        raise ValueError(f"Invalid time_range '{time_range}'. Valid options: {valid_options}")
+        valid_options = ", ".join(TIME_RANGES.keys())
+        raise ValueError(
+            f"Invalid time_range '{time_range}'. Valid options: {valid_options}"
+        )
 
     days = TIME_RANGES[time_range]
     if days is None:
@@ -71,7 +69,8 @@ def _filter_by_date(review_data: list, cutoff_date: Optional[datetime.date]) -> 
         return review_data
 
     return [
-        (date_str, count) for date_str, count in review_data
+        (date_str, count)
+        for date_str, count in review_data
         if _parse_date(date_str) >= cutoff_date
     ]
 
@@ -82,9 +81,13 @@ def _format_review_data(filtered_data: list) -> str:
         return "No reviews found for the specified time range."
 
     total_cards = sum(count for _, count in filtered_data)
-    formatted_lines = [f"  {date_str}: {count} cards" for date_str, count in filtered_data]
+    formatted_lines = [
+        f"  {date_str}: {count} cards" for date_str, count in filtered_data
+    ]
 
-    header = f"Cards reviewed ({len(filtered_data)} days, {total_cards} total reviews):\n"
+    header = (
+        f"Cards reviewed ({len(filtered_data)} days, {total_cards} total reviews):\n"
+    )
     return header + "\n".join(formatted_lines)
 
 

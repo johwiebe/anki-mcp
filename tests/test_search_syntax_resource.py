@@ -1,6 +1,5 @@
 """Tests for the search syntax documentation resource."""
 
-import pytest
 from anki_mcp.resources.search_syntax import get_search_syntax_docs
 
 

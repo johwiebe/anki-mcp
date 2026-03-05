@@ -12,19 +12,17 @@ async def test_find_notes_success(monkeypatch):
             "tags": ["test", "example"],
             "fields": {
                 "Front": {"value": "What is Python?", "order": 0},
-                "Back": {"value": "A programming language", "order": 1}
+                "Back": {"value": "A programming language", "order": 1},
             },
-            "mod": 1700000000
+            "mod": 1700000000,
         },
         {
             "noteId": 5678,
             "modelName": "Cloze",
             "tags": [],
-            "fields": {
-                "Text": {"value": "{{c1::Python}} is a language", "order": 0}
-            },
-            "mod": 1700000001
-        }
+            "fields": {"Text": {"value": "{{c1::Python}} is a language", "order": 0}},
+            "mod": 1700000001,
+        },
     ]
 
     async def mock_anki_request(action, **kwargs):
@@ -32,7 +30,9 @@ async def test_find_notes_success(monkeypatch):
         assert kwargs["query"] == "deck:Test"
         return {"success": True, "result": mock_notes}
 
-    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.find_notes.make_anki_request", mock_anki_request
+    )
 
     result = await find_notes("deck:Test")
 
@@ -52,11 +52,14 @@ async def test_find_notes_success(monkeypatch):
 @pytest.mark.asyncio
 async def test_find_notes_no_results(monkeypatch):
     """Test search that returns no matching notes."""
+
     async def mock_anki_request(action, **kwargs):
         assert action == "notesInfo"
         return {"success": True, "result": []}
 
-    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.find_notes.make_anki_request", mock_anki_request
+    )
 
     result = await find_notes("deck:NonExistent")
 
@@ -67,10 +70,13 @@ async def test_find_notes_no_results(monkeypatch):
 @pytest.mark.asyncio
 async def test_find_notes_api_failure(monkeypatch):
     """Test handling of API errors."""
+
     async def mock_anki_request(action, **kwargs):
         return {"success": False, "error": "Invalid search query"}
 
-    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.find_notes.make_anki_request", mock_anki_request
+    )
 
     result = await find_notes("invalid:query")
 
@@ -89,16 +95,18 @@ async def test_find_notes_long_field_shown_in_full(monkeypatch):
             "tags": [],
             "fields": {
                 "Front": {"value": long_value, "order": 0},
-                "Back": {"value": "Short", "order": 1}
+                "Back": {"value": "Short", "order": 1},
             },
-            "mod": 1700000000
+            "mod": 1700000000,
         }
     ]
 
     async def mock_anki_request(action, **kwargs):
         return {"success": True, "result": mock_notes}
 
-    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.find_notes.make_anki_request", mock_anki_request
+    )
 
     result = await find_notes("*")
 
@@ -117,16 +125,18 @@ async def test_find_notes_single_result(monkeypatch):
             "tags": ["unique"],
             "fields": {
                 "Front": {"value": "Single question", "order": 0},
-                "Back": {"value": "Single answer", "order": 1}
+                "Back": {"value": "Single answer", "order": 1},
             },
-            "mod": 1700000000
+            "mod": 1700000000,
         }
     ]
 
     async def mock_anki_request(action, **kwargs):
         return {"success": True, "result": mock_notes}
 
-    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.find_notes.make_anki_request", mock_anki_request
+    )
 
     result = await find_notes("tag:unique")
 
@@ -140,13 +150,16 @@ async def test_find_notes_single_result(monkeypatch):
 @pytest.mark.asyncio
 async def test_find_notes_special_characters_in_query(monkeypatch):
     """Test search with special characters in query."""
+
     async def mock_anki_request(action, **kwargs):
-        assert kwargs["query"] == "front:*test* OR back:\"exact phrase\""
+        assert kwargs["query"] == 'front:*test* OR back:"exact phrase"'
         return {"success": True, "result": []}
 
-    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.find_notes.make_anki_request", mock_anki_request
+    )
 
-    result = await find_notes("front:*test* OR back:\"exact phrase\"")
+    result = await find_notes('front:*test* OR back:"exact phrase"')
 
     assert len(result) == 1
     assert "No notes found" in result[0].text
@@ -163,9 +176,9 @@ async def test_find_notes_limit_results(monkeypatch):
             "tags": [],
             "fields": {
                 "Front": {"value": f"Question {i}", "order": 0},
-                "Back": {"value": f"Answer {i}", "order": 1}
+                "Back": {"value": f"Answer {i}", "order": 1},
             },
-            "mod": 1700000000 + i
+            "mod": 1700000000 + i,
         }
         for i in range(30)
     ]
@@ -173,7 +186,9 @@ async def test_find_notes_limit_results(monkeypatch):
     async def mock_anki_request(action, **kwargs):
         return {"success": True, "result": mock_notes}
 
-    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.find_notes.make_anki_request", mock_anki_request
+    )
 
     # Test with default limit (20)
     result = await find_notes("deck:Test")
@@ -197,9 +212,9 @@ async def test_find_notes_custom_limit(monkeypatch):
             "tags": [],
             "fields": {
                 "Front": {"value": f"Question {i}", "order": 0},
-                "Back": {"value": f"Answer {i}", "order": 1}
+                "Back": {"value": f"Answer {i}", "order": 1},
             },
-            "mod": 1700000000 + i
+            "mod": 1700000000 + i,
         }
         for i in range(10)
     ]
@@ -207,7 +222,9 @@ async def test_find_notes_custom_limit(monkeypatch):
     async def mock_anki_request(action, **kwargs):
         return {"success": True, "result": mock_notes}
 
-    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.find_notes.make_anki_request", mock_anki_request
+    )
 
     # Test with custom limit of 5
     result = await find_notes("deck:Test", limit=5)
@@ -229,9 +246,9 @@ async def test_find_notes_under_limit(monkeypatch):
             "tags": [],
             "fields": {
                 "Front": {"value": f"Question {i}", "order": 0},
-                "Back": {"value": f"Answer {i}", "order": 1}
+                "Back": {"value": f"Answer {i}", "order": 1},
             },
-            "mod": 1700000000 + i
+            "mod": 1700000000 + i,
         }
         for i in range(5)
     ]
@@ -239,7 +256,9 @@ async def test_find_notes_under_limit(monkeypatch):
     async def mock_anki_request(action, **kwargs):
         return {"success": True, "result": mock_notes}
 
-    monkeypatch.setattr("anki_mcp.tools.find_notes.make_anki_request", mock_anki_request)
+    monkeypatch.setattr(
+        "anki_mcp.tools.find_notes.make_anki_request", mock_anki_request
+    )
 
     result = await find_notes("deck:Test", limit=10)
 
